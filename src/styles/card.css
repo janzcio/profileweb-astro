@@ -302,6 +302,7 @@
 }
 
 .portfolio-panel{
+    position: relative;
     align-items: center;
     padding: 30px 42px;
     color: #FFFFFF;
@@ -387,6 +388,73 @@
     color: #d2dfdc;
     font-size: 12px;
     line-height: 1.35;
+}
+
+.portfolio-lightbox[hidden]{
+    display: none;
+}
+
+.portfolio-lightbox{
+    position: absolute;
+    z-index: 3;
+    inset: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    overflow-y: auto;
+    border: 1px solid rgba(143, 213, 196, .65);
+    border-radius: 8px;
+    padding: 26px;
+    color: #FFFFFF;
+    background: rgba(9, 22, 21, .97);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+}
+
+.portfolio-lightbox > img{
+    display: block;
+    width: 100%;
+    max-height: 230px;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+.portfolio-lightbox h3,
+.portfolio-lightbox p{
+    margin: 0;
+}
+
+.portfolio-lightbox h3{
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.portfolio-lightbox p{
+    margin-top: 6px;
+    color: #d2dfdc;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.portfolio-lightbox-close{
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, .14);
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.portfolio-lightbox-close:hover,
+.portfolio-lightbox-close:focus-visible{
+    background: #8fd5c4;
+    color: #10201e;
 }
 
 .descripcion{

@@ -120,6 +120,14 @@ import '../styles/card.css';
                             </article>
                         ))}
                     </div>
+                    <div class="portfolio-lightbox" data-portfolio-lightbox role="dialog" aria-modal="true" aria-labelledby="portfolio-lightbox-title" hidden>
+                        <button class="portfolio-lightbox-close" type="button" data-portfolio-close aria-label="Close project preview">&times;</button>
+                        <img data-portfolio-lightbox-image alt="">
+                        <div>
+                            <h3 data-portfolio-lightbox-title></h3>
+                            <p data-portfolio-lightbox-description></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -205,6 +213,53 @@ import '../styles/card.css';
         image.closest('.portfolio-item')?.addEventListener('pointerleave', showPreview);
         image.closest('.portfolio-item')?.addEventListener('focusin', showAnimation);
         image.closest('.portfolio-item')?.addEventListener('focusout', showPreview);
+    });
+
+    const lightbox = document.querySelector<HTMLElement>('[data-portfolio-lightbox]');
+    const lightboxImage = document.querySelector<HTMLImageElement>('[data-portfolio-lightbox-image]');
+    const lightboxTitle = document.querySelector<HTMLElement>('[data-portfolio-lightbox-title]');
+    const lightboxDescription = document.querySelector<HTMLElement>('[data-portfolio-lightbox-description]');
+    const closeLightbox = document.querySelector<HTMLButtonElement>('[data-portfolio-close]');
+
+    const hideLightbox = () => {
+        if (!lightbox) return;
+        lightbox.hidden = true;
+        lightboxImage?.removeAttribute('src');
+    };
+
+    const showLightbox = (item: HTMLElement) => {
+        const image = item.querySelector<HTMLImageElement>('img');
+        const title = item.querySelector<HTMLElement>('.portfolio-details h3');
+        const description = item.querySelector<HTMLElement>('.portfolio-details p');
+        if (!lightbox || !image || !title || !description) return;
+
+        lightboxImage?.setAttribute('src', image.dataset.gif ?? image.src);
+        lightboxImage?.setAttribute('alt', image.alt);
+        if (lightboxTitle) lightboxTitle.textContent = title.textContent;
+        if (lightboxDescription) lightboxDescription.textContent = description.textContent;
+        lightbox.hidden = false;
+        closeLightbox?.focus();
+    };
+
+    document.querySelectorAll<HTMLElement>('.portfolio-item').forEach((item) => {
+        item.addEventListener('click', (event) => {
+            event.stopPropagation();
+            showLightbox(item);
+        });
+        item.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                showLightbox(item);
+            }
+        });
+    });
+
+    closeLightbox?.addEventListener('click', hideLightbox);
+    lightbox?.addEventListener('click', (event) => {
+        if (event.target === lightbox) hideLightbox();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') hideLightbox();
     });
 
     const contactForm = document.querySelector<HTMLFormElement>('[data-contact-form]');
