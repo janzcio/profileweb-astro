@@ -321,6 +321,8 @@ import '../styles/card.css';
     };
 
     document.querySelectorAll<HTMLElement>('.portfolio-item').forEach((item) => {
+        item.addEventListener('pointerdown', (event) => event.stopPropagation());
+        item.addEventListener('pointermove', (event) => event.stopPropagation());
         item.addEventListener('click', (event) => {
             event.stopPropagation();
             showLightbox(item);
@@ -333,7 +335,12 @@ import '../styles/card.css';
         });
     });
 
-    closeLightbox?.addEventListener('click', hideLightbox);
+    lightbox?.addEventListener('pointerdown', (event) => event.stopPropagation());
+    lightbox?.addEventListener('pointermove', (event) => event.stopPropagation());
+    closeLightbox?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        hideLightbox();
+    });
     lightbox?.addEventListener('click', (event) => {
         if (event.target === lightbox) hideLightbox();
     });
@@ -390,6 +397,8 @@ import '../styles/card.css';
     };
 
     document.querySelectorAll<HTMLElement>('.video-item').forEach((item) => {
+        item.addEventListener('pointerdown', (event) => event.stopPropagation());
+        item.addEventListener('pointermove', (event) => event.stopPropagation());
         item.addEventListener('click', (event) => {
             event.stopPropagation();
             showVideo(item);
@@ -402,7 +411,12 @@ import '../styles/card.css';
         });
     });
 
-    closeVideo?.addEventListener('click', hideVideo);
+    videoLightbox?.addEventListener('pointerdown', (event) => event.stopPropagation());
+    videoLightbox?.addEventListener('pointermove', (event) => event.stopPropagation());
+    closeVideo?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        hideVideo();
+    });
     fullscreenVideo?.addEventListener('click', (event) => {
         event.stopPropagation();
         if (videoPlayerFrame?.requestFullscreen) {
