@@ -495,6 +495,7 @@
     font-weight: 500;
     font-size: medium;
     overflow-wrap: anywhere;
+    text-align: center;
 }
 
 .descripcion p{
@@ -511,6 +512,7 @@
     margin: 0 0 8px;
     font-weight: 400;
     overflow-wrap: anywhere;
+    text-align: center;
 }
 
 /* ICONS */
