@@ -7,7 +7,15 @@ type WorkExperience = {
     description: string;
 };
 
-const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [] } = Astro.props as {
+type Education = {
+    school: string;
+    location: string;
+    period: string;
+    logo: string;
+    description: string;
+};
+
+const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [], education = [] } = Astro.props as {
     name: string;
     position: string;
     aboutMe: string;
@@ -16,6 +24,7 @@ const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExp
     cvLink: string;
     profileImage: string;
     workExperience?: WorkExperience[];
+    education?: Education[];
 };
 
 import '../styles/card.css';
@@ -67,6 +76,49 @@ import '../styles/card.css';
                     </div>
                 </div>
             </section>
+
+            <section class="card-panel education-panel" aria-label="Education">
+                <div class="education-content">
+                    <p class="eyebrow">Background</p>
+                    <h2>Education</h2>
+                    <div class="education-list">
+                        {education.map((item) => (
+                            <article class="education-item">
+                                <img src={item.logo} alt={`${item.school} logo`}>
+                                <div class="education-details">
+                                    <time>{item.period}</time>
+                                    <h3>{item.school}</h3>
+                                    <p class="company">{item.location}</p>
+                                    <p>{item.description}</p>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-panel contact-panel" aria-label="How to reach me">
+                <div class="contact-content">
+                    <p class="eyebrow">Let's connect</p>
+                    <h2>How to reach me</h2>
+                    <p class="contact-intro">Have an opportunity or a question? Send me a message at <a href="mailto:jmi050994@gmail.com">jmi050994@gmail.com</a>.</p>
+                    <form class="contact-form" data-contact-form>
+                        <label>
+                            Your name
+                            <input name="name" type="text" autocomplete="name" required>
+                        </label>
+                        <label>
+                            Your email
+                            <input name="email" type="email" autocomplete="email" required>
+                        </label>
+                        <label>
+                            Message
+                            <textarea name="message" rows="4" required></textarea>
+                        </label>
+                        <button type="submit">Open email</button>
+                    </form>
+                </div>
+            </section>
         </div>
     </div>
 </div>
@@ -77,11 +129,11 @@ import '../styles/card.css';
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
-    let isExperienceVisible = false;
+    let panelIndex = 0;
 
-    const setCardState = (showExperience: boolean) => {
-        isExperienceVisible = showExperience;
-        track?.classList.toggle('is-experience-visible', showExperience);
+    const setCardState = (nextPanelIndex: number) => {
+        panelIndex = Math.max(0, Math.min(3, nextPanelIndex));
+        track?.style.setProperty('--panel-index', `${panelIndex}`);
     };
 
     card?.addEventListener('pointerdown', (event: PointerEvent) => {
@@ -96,8 +148,7 @@ import '../styles/card.css';
         if (!isDragging || !track) return;
         currentX = event.clientX;
         const distance = currentX - startX;
-        const direction = isExperienceVisible ? 1 : -1;
-        track.style.setProperty('--drag-offset', `${Math.min(0, Math.max(-100, distance * direction))}px`);
+        track.style.setProperty('--drag-offset', `${distance}px`);
     });
 
     const finishSwipe = (event: PointerEvent) => {
@@ -108,10 +159,24 @@ import '../styles/card.css';
         card?.releasePointerCapture(event.pointerId);
 
         if (Math.abs(currentX - startX) > 55) {
-            setCardState(currentX < startX ? true : false);
+            setCardState(panelIndex + (currentX < startX ? 1 : -1));
         }
     };
 
     card?.addEventListener('pointerup', finishSwipe);
     card?.addEventListener('pointercancel', finishSwipe);
+
+    const contactForm = document.querySelector<HTMLFormElement>('[data-contact-form]');
+    contactForm?.addEventListener('pointerdown', (event) => event.stopPropagation());
+    contactForm?.addEventListener('pointermove', (event) => event.stopPropagation());
+    contactForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(contactForm);
+        const name = String(formData.get('name') ?? '');
+        const email = String(formData.get('email') ?? '');
+        const message = String(formData.get('message') ?? '');
+        const subject = encodeURIComponent(`Portfolio inquiry from ${name}`);
+        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+        window.location.href = `mailto:jmi050994@gmail.com?subject=${subject}&body=${body}`;
+    });
 </script>
