@@ -540,6 +540,11 @@
     overflow-wrap: anywhere;
 }
 
+.txt-rotate{
+    display: inline;
+    color: #8fd5c4;
+}
+
 .descripcion h1{
     width: 100%;
     margin: 0 0 8px;

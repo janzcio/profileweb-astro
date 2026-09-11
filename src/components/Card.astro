@@ -46,7 +46,15 @@ import '../styles/card.css';
             <section class="card-panel profile-panel" aria-label="Profile">
                 <div class="descripcion">
                     <h1>{name}</h1>
-                    <h2><b>{position}</b></h2>
+                    <h2>
+                        I'm&nbsp;
+                        <span
+                            class="txt-rotate"
+                            data-period="300"
+                            data-rotate='["a Senior Software Engineer.", "an API Engineer.", "a Mobile Web Developer.", "a NodeJS Developer.", "a Reactjs Developer.", "a Vuejs Developer."]'
+                            aria-live="polite"
+                        >{position}.</span>
+                    </h2>
                     <p>{aboutMe}</p>
                     <div class="icons">
                         <a href={linkedin} class="hover-text" target="_blank" rel="noopener noreferrer">
@@ -289,6 +297,35 @@ import '../styles/card.css';
     });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') hideLightbox();
+    });
+
+    document.querySelectorAll<HTMLElement>('.txt-rotate').forEach((rotator) => {
+        const phrases = JSON.parse(rotator.dataset.rotate ?? '[]') as string[];
+        const pause = Number(rotator.dataset.period ?? 300);
+        let phraseIndex = 0;
+        let characterIndex = rotator.textContent?.length ?? 0;
+        let isDeleting = true;
+
+        const typePhrase = () => {
+            if (!phrases.length) return;
+            const phrase = phrases[phraseIndex];
+            characterIndex += isDeleting ? -1 : 1;
+            rotator.textContent = phrase.substring(0, characterIndex);
+
+            let delay = isDeleting ? 45 : 85;
+            if (!isDeleting && characterIndex === phrase.length) {
+                delay = pause;
+                isDeleting = true;
+            } else if (isDeleting && characterIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                delay = 180;
+            }
+
+            window.setTimeout(typePhrase, delay);
+        };
+
+        window.setTimeout(typePhrase, pause);
     });
 
     const contactForm = document.querySelector<HTMLFormElement>('[data-contact-form]');
