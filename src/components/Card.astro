@@ -58,25 +58,6 @@ import '../styles/card.css';
                 </div>
             </section>
 
-            <section class="card-panel experience-panel" aria-label="Work experience">
-                <div class="experience-content">
-                    <p class="eyebrow">Career</p>
-                    <h2>Work experience</h2>
-                    <div class="experience-list">
-                        {workExperience.map((experience) => (
-                            <article class="experience-item">
-                                <div>
-                                    <h3>{experience.role}</h3>
-                                    <p class="company">{experience.company}</p>
-                                </div>
-                                <time>{experience.period}</time>
-                                <p>{experience.description}</p>
-                            </article>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
             <section class="card-panel education-panel" aria-label="Education">
                 <div class="education-content">
                     <p class="eyebrow">Background</p>
@@ -96,6 +77,27 @@ import '../styles/card.css';
                     </div>
                 </div>
             </section>
+
+            <section class="card-panel experience-panel" aria-label="Work experience">
+                <div class="experience-content">
+                    <p class="eyebrow">Career</p>
+                    <h2>Work experience</h2>
+                    <div class="experience-list">
+                        {workExperience.map((experience) => (
+                            <article class="experience-item">
+                                <div>
+                                    <h3>{experience.role}</h3>
+                                    <p class="company">{experience.company}</p>
+                                </div>
+                                <time>{experience.period}</time>
+                                <p>{experience.description}</p>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            
 
             <section class="card-panel contact-panel" aria-label="How to reach me">
                 <div class="contact-content">
