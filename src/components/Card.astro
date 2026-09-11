@@ -22,7 +22,16 @@ type PortfolioItem = {
     description: string;
 };
 
-const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [], education = [], portfolio = [] } = Astro.props as {
+type VideoItem = {
+    title: string;
+    source?: string;
+    youtubeId?: string;
+    googleDriveId?: string;
+    poster?: string;
+    description: string;
+};
+
+const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [], education = [], portfolio = [], videos = [] } = Astro.props as {
     name: string;
     position: string;
     aboutMe: string;
@@ -33,6 +42,7 @@ const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExp
     workExperience?: WorkExperience[];
     education?: Education[];
     portfolio?: PortfolioItem[];
+    videos?: VideoItem[];
 };
 
 import '../styles/card.css';
@@ -131,6 +141,37 @@ import '../styles/card.css';
                 </div>
             </section>
 
+            <section class="card-panel video-panel" aria-label="Videos">
+                <div class="video-content">
+                    <p class="eyebrow">Behind the work</p>
+                    <h2>Videos</h2>
+                    <div class="video-list">
+                        {videos.map((item) => (
+                            <article class="video-item" tabindex="0" data-youtube-id={item.youtubeId} data-google-drive-id={item.googleDriveId}>
+                                {item.youtubeId ? (
+                                    <img src={`https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg`} alt={`${item.title} video preview`}>
+                                ) : item.googleDriveId ? (
+                                    <img src={`https://drive.google.com/thumbnail?id=${item.googleDriveId}&sz=w800`} alt={`${item.title} video preview`}>
+                                ) : (
+                                    <video src={item.source} poster={item.poster} preload="metadata" muted playsinline></video>
+                                )}
+                                <div class="video-details">
+                                    <span class="video-play" aria-hidden="true">Play</span>
+                                    <h3>{item.title}</h3>
+                                    <p>{item.description}</p>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+                <div class="video-lightbox" data-video-lightbox role="dialog" aria-modal="true" aria-labelledby="video-lightbox-title" hidden>
+                    <button class="video-lightbox-close" type="button" data-video-close aria-label="Close video">&times;</button>
+                    <div class="video-player-frame" data-video-player-frame></div>
+                    <h3 data-video-lightbox-title></h3>
+                    <p data-video-lightbox-description></p>
+                </div>
+            </section>
+
             
 
             <section class="card-panel contact-panel" aria-label="How to reach me">
@@ -168,7 +209,7 @@ import '../styles/card.css';
     let panelIndex = 0;
 
     const setCardState = (nextPanelIndex: number) => {
-        panelIndex = Math.max(0, Math.min(4, nextPanelIndex));
+        panelIndex = Math.max(0, Math.min(5, nextPanelIndex));
         track?.style.setProperty('--panel-index', `${panelIndex}`);
     };
 
@@ -264,6 +305,74 @@ import '../styles/card.css';
     });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') hideLightbox();
+    });
+
+    const videoLightbox = document.querySelector<HTMLElement>('[data-video-lightbox]');
+    const videoPlayerFrame = document.querySelector<HTMLElement>('[data-video-player-frame]');
+    const videoTitle = document.querySelector<HTMLElement>('[data-video-lightbox-title]');
+    const videoDescription = document.querySelector<HTMLElement>('[data-video-lightbox-description]');
+    const closeVideo = document.querySelector<HTMLButtonElement>('[data-video-close]');
+
+    const hideVideo = () => {
+        if (!videoLightbox || !videoPlayerFrame) return;
+        videoLightbox.hidden = true;
+        videoPlayerFrame.replaceChildren();
+    };
+
+    const showVideo = (item: HTMLElement) => {
+        const source = item.querySelector<HTMLVideoElement>('video');
+        const preview = item.querySelector<HTMLImageElement>('img');
+        const youtubeId = item.dataset.youtubeId;
+        const googleDriveId = item.dataset.googleDriveId;
+        const title = item.querySelector<HTMLElement>('.video-details h3');
+        const description = item.querySelector<HTMLElement>('.video-details p');
+        if (!videoLightbox || !videoPlayerFrame || !title || !description || (!source && !youtubeId && !googleDriveId)) return;
+
+        if (youtubeId) {
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`;
+            iframe.title = title.textContent ?? 'Video';
+            iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+            iframe.allowFullscreen = true;
+            videoPlayerFrame.append(iframe);
+        } else if (googleDriveId) {
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://drive.google.com/file/d/${googleDriveId}/preview`;
+            iframe.title = title.textContent ?? 'Video';
+            iframe.allow = 'autoplay; fullscreen';
+            iframe.allowFullscreen = true;
+            videoPlayerFrame.append(iframe);
+        } else if (source) {
+            const video = document.createElement('video');
+            video.src = source.currentSrc || source.src;
+            video.poster = source.poster || preview?.src || '';
+            video.controls = true;
+            video.autoplay = true;
+            video.playsInline = true;
+            videoPlayerFrame.append(video);
+        }
+        if (videoTitle) videoTitle.textContent = title.textContent;
+        if (videoDescription) videoDescription.textContent = description.textContent;
+        videoLightbox.hidden = false;
+        closeVideo?.focus();
+    };
+
+    document.querySelectorAll<HTMLElement>('.video-item').forEach((item) => {
+        item.addEventListener('click', (event) => {
+            event.stopPropagation();
+            showVideo(item);
+        });
+        item.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                showVideo(item);
+            }
+        });
+    });
+
+    closeVideo?.addEventListener('click', hideVideo);
+    videoLightbox?.addEventListener('click', (event) => {
+        if (event.target === videoLightbox) hideVideo();
     });
 
     const contactForm = document.querySelector<HTMLFormElement>('[data-contact-form]');
