@@ -190,12 +190,16 @@ import '../styles/card.css';
     const finishSwipe = (event: PointerEvent) => {
         if (!isDragging) return;
         isDragging = false;
-        track?.classList.remove('is-dragging');
-        track?.style.removeProperty('--drag-offset');
         card?.releasePointerCapture(event.pointerId);
 
-        if (Math.abs(currentX - startX) > 55) {
+        const hasSwiped = Math.abs(currentX - startX) > 55;
+        track?.classList.remove('is-dragging');
+
+        if (hasSwiped && track) {
             setCardState(panelIndex + (currentX < startX ? 1 : -1));
+            requestAnimationFrame(() => track.style.removeProperty('--drag-offset'));
+        } else {
+            track?.style.removeProperty('--drag-offset');
         }
     };
 
