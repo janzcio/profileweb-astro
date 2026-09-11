@@ -115,9 +115,9 @@
 
 .card-track{
     display: flex;
-    width: 600%;
+    width: 700%;
     height: 100%;
-    transform: translateX(calc(var(--panel-index, 0) * -16.666667% + var(--drag-offset, 0px)));
+    transform: translateX(calc(var(--panel-index, 0) * -14.285714% + var(--drag-offset, 0px)));
     transition: transform .65s cubic-bezier(.16, 1, .3, 1);
     will-change: transform;
 }
@@ -128,7 +128,7 @@
 
 .card-panel{
     display: flex;
-    flex: 0 0 16.666667%;
+    flex: 0 0 14.285714%;
     min-width: 0;
     min-height: 0;
     box-sizing: border-box;
@@ -726,6 +726,169 @@
     background: #8fd5c4;
 }
 
+.testimonials-panel{
+    position: relative;
+    align-items: center;
+    padding: 30px 42px;
+    color: #FFFFFF;
+}
+
+.testimonials-content{
+    width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.testimonials-panel h2{
+    margin: 0 0 16px;
+    font-size: 32px;
+    font-weight: 400;
+}
+
+.testimonials-list{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.testimonial-item{
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    min-width: 0;
+    min-height: 105px;
+    overflow: hidden;
+    border: 1px solid rgba(143, 213, 196, .35);
+    border-radius: 8px;
+    padding: 10px;
+    color: #FFFFFF;
+    background: rgba(0, 0, 0, .3);
+    cursor: pointer;
+    outline: none;
+}
+
+.testimonial-item:hover,
+.testimonial-item:focus-visible{
+    border-color: #8fd5c4;
+    box-shadow: 0 0 0 2px rgba(143, 213, 196, .4);
+}
+
+.testimonial-item img{
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.testimonial-details{
+    min-width: 0;
+}
+
+.testimonial-details h3,
+.testimonial-details strong,
+.testimonial-details p{
+    display: block;
+    margin: 0;
+}
+
+.testimonial-details h3{
+    font-size: 15px;
+}
+
+.testimonial-details strong{
+    margin-top: 3px;
+    color: #8fd5c4;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.testimonial-details p{
+    display: -webkit-box;
+    margin-top: 7px;
+    overflow: hidden;
+    color: #d2dfdc;
+    font-size: 12px;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.testimonial-lightbox[hidden]{
+    display: none;
+}
+
+.testimonial-lightbox{
+    position: absolute;
+    z-index: 10;
+    inset: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    overflow-y: auto;
+    border: 1px solid rgba(143, 213, 196, .65);
+    border-radius: 8px;
+    padding: 26px;
+    color: #FFFFFF;
+    background: rgba(9, 22, 21, .97);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+}
+
+.testimonial-lightbox img{
+    display: block;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.testimonial-lightbox h3,
+.testimonial-lightbox strong,
+.testimonial-lightbox p{
+    margin: 0;
+}
+
+.testimonial-lightbox h3{
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.testimonial-lightbox strong{
+    color: #8fd5c4;
+    font-size: 13px;
+}
+
+.testimonial-lightbox p{
+    color: #d2dfdc;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.testimonial-lightbox-close{
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, .14);
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.testimonial-lightbox-close:hover,
+.testimonial-lightbox-close:focus-visible{
+    color: #10201e;
+    background: #8fd5c4;
+}
+
 .descripcion{
     display: flex;
     justify-content: flex-start;
@@ -886,6 +1049,9 @@ a:hover{
     .video-panel{
         padding: 28px 24px;
     }
+    .testimonials-panel{
+        padding: 28px 24px;
+    }
     .experience-panel h2{
         font-size: 27px;
     }
@@ -904,7 +1070,13 @@ a:hover{
     .video-panel h2{
         font-size: 27px;
     }
+    .testimonials-panel h2{
+        font-size: 27px;
+    }
     .video-list{
+        grid-template-columns: 1fr;
+    }
+    .testimonials-list{
         grid-template-columns: 1fr;
     }
     .descripcion h1{

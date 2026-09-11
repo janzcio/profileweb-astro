@@ -31,7 +31,14 @@ type VideoItem = {
     description: string;
 };
 
-const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [], education = [], portfolio = [], videos = [] } = Astro.props as {
+type TestimonialItem = {
+    name: string;
+    role: string;
+    image: string;
+    quote: string;
+};
+
+const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [], education = [], portfolio = [], videos = [], testimonials = [] } = Astro.props as {
     name: string;
     position: string;
     aboutMe: string;
@@ -43,6 +50,7 @@ const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExp
     education?: Education[];
     portfolio?: PortfolioItem[];
     videos?: VideoItem[];
+    testimonials?: TestimonialItem[];
 };
 
 import '../styles/card.css';
@@ -183,7 +191,31 @@ import '../styles/card.css';
                 </div>
             </section>
 
-            
+            <section class="card-panel testimonials-panel" aria-label="Testimonials">
+                <div class="testimonials-content">
+                    <p class="eyebrow">Friends and colleagues</p>
+                    <h2>Testimonials</h2>
+                    <div class="testimonials-list">
+                        {testimonials.map((item) => (
+                            <article class="testimonial-item" tabindex="0">
+                                <img src={item.image} alt={`${item.name} testimonial photo`}>
+                                <div class="testimonial-details">
+                                    <h3>{item.name}</h3>
+                                    <strong>{item.role}</strong>
+                                    <p>{item.quote}</p>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+                <div class="testimonial-lightbox" data-testimonial-lightbox role="dialog" aria-modal="true" aria-labelledby="testimonial-lightbox-title" hidden>
+                    <button class="testimonial-lightbox-close" type="button" data-testimonial-close aria-label="Close testimonial">&times;</button>
+                    <img data-testimonial-lightbox-image alt="">
+                    <h3 data-testimonial-lightbox-title></h3>
+                    <strong data-testimonial-lightbox-role></strong>
+                    <p data-testimonial-lightbox-quote></p>
+                </div>
+            </section>
 
             <section class="card-panel contact-panel" aria-label="How to reach me">
                 <div class="contact-content">
@@ -223,7 +255,7 @@ import '../styles/card.css';
     const swipeThreshold = 28;
 
     const setCardState = (nextPanelIndex: number) => {
-        panelIndex = Math.max(0, Math.min(5, nextPanelIndex));
+        panelIndex = Math.max(0, Math.min(6, nextPanelIndex));
         track?.style.setProperty('--panel-index', `${panelIndex}`);
     };
 
@@ -425,6 +457,63 @@ import '../styles/card.css';
     });
     videoLightbox?.addEventListener('click', (event) => {
         if (event.target === videoLightbox) hideVideo();
+    });
+
+    const testimonialLightbox = document.querySelector<HTMLElement>('[data-testimonial-lightbox]');
+    const testimonialImage = document.querySelector<HTMLImageElement>('[data-testimonial-lightbox-image]');
+    const testimonialTitle = document.querySelector<HTMLElement>('[data-testimonial-lightbox-title]');
+    const testimonialRole = document.querySelector<HTMLElement>('[data-testimonial-lightbox-role]');
+    const testimonialQuote = document.querySelector<HTMLElement>('[data-testimonial-lightbox-quote]');
+    const closeTestimonial = document.querySelector<HTMLButtonElement>('[data-testimonial-close]');
+
+    const hideTestimonial = () => {
+        if (!testimonialLightbox) return;
+        testimonialLightbox.hidden = true;
+        testimonialImage?.removeAttribute('src');
+    };
+
+    const showTestimonial = (item: HTMLElement) => {
+        const image = item.querySelector<HTMLImageElement>('img');
+        const title = item.querySelector<HTMLElement>('.testimonial-details h3');
+        const role = item.querySelector<HTMLElement>('.testimonial-details strong');
+        const quote = item.querySelector<HTMLElement>('.testimonial-details p');
+        if (!testimonialLightbox || !image || !title || !role || !quote) return;
+
+        testimonialImage?.setAttribute('src', image.src);
+        testimonialImage?.setAttribute('alt', image.alt);
+        if (testimonialTitle) testimonialTitle.textContent = title.textContent;
+        if (testimonialRole) testimonialRole.textContent = role.textContent;
+        if (testimonialQuote) testimonialQuote.textContent = quote.textContent;
+        testimonialLightbox.hidden = false;
+        closeTestimonial?.focus();
+    };
+
+    document.querySelectorAll<HTMLElement>('.testimonial-item').forEach((item) => {
+        item.addEventListener('pointerdown', (event) => event.stopPropagation());
+        item.addEventListener('pointermove', (event) => event.stopPropagation());
+        item.addEventListener('click', (event) => {
+            event.stopPropagation();
+            showTestimonial(item);
+        });
+        item.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                showTestimonial(item);
+            }
+        });
+    });
+
+    testimonialLightbox?.addEventListener('pointerdown', (event) => event.stopPropagation());
+    testimonialLightbox?.addEventListener('pointermove', (event) => event.stopPropagation());
+    closeTestimonial?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        hideTestimonial();
+    });
+    testimonialLightbox?.addEventListener('click', (event) => {
+        if (event.target === testimonialLightbox) hideTestimonial();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') hideTestimonial();
     });
 
     document.querySelectorAll<HTMLElement>('.txt-rotate').forEach((rotator) => {
