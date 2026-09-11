@@ -181,9 +181,14 @@ import '../styles/card.css';
     const nextSlide = document.querySelector<HTMLButtonElement>('[data-carousel-next]');
     const navigateFromZone = (direction: number, event: Event) => {
         event.stopPropagation();
+        isDragging = false;
+        track?.classList.remove('is-dragging');
+        track?.style.removeProperty('--drag-offset');
         setCardState(panelIndex + direction);
     };
 
+    previousSlide?.addEventListener('pointerdown', (event) => event.stopPropagation());
+    nextSlide?.addEventListener('pointerdown', (event) => event.stopPropagation());
     previousSlide?.addEventListener('click', (event) => navigateFromZone(-1, event));
     nextSlide?.addEventListener('click', (event) => navigateFromZone(1, event));
 
