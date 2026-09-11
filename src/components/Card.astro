@@ -15,7 +15,14 @@ type Education = {
     description: string;
 };
 
-const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [], education = [] } = Astro.props as {
+type PortfolioItem = {
+    title: string;
+    image: string;
+    gif: string;
+    description: string;
+};
+
+const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExperience = [], education = [], portfolio = [] } = Astro.props as {
     name: string;
     position: string;
     aboutMe: string;
@@ -25,6 +32,7 @@ const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExp
     profileImage: string;
     workExperience?: WorkExperience[];
     education?: Education[];
+    portfolio?: PortfolioItem[];
 };
 
 import '../styles/card.css';
@@ -97,6 +105,24 @@ import '../styles/card.css';
                 </div>
             </section>
 
+            <section class="card-panel portfolio-panel" aria-label="Portfolio">
+                <div class="portfolio-content">
+                    <p class="eyebrow">Selected work</p>
+                    <h2>Portfolio</h2>
+                    <div class="portfolio-list">
+                        {portfolio.map((item) => (
+                            <article class="portfolio-item" tabindex="0">
+                                <img src={item.image} data-gif={item.gif} alt={`${item.title} project preview`}>
+                                <div class="portfolio-details">
+                                    <h3>{item.title}</h3>
+                                    <p>{item.description}</p>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             
 
             <section class="card-panel contact-panel" aria-label="How to reach me">
@@ -134,7 +160,7 @@ import '../styles/card.css';
     let panelIndex = 0;
 
     const setCardState = (nextPanelIndex: number) => {
-        panelIndex = Math.max(0, Math.min(3, nextPanelIndex));
+        panelIndex = Math.max(0, Math.min(4, nextPanelIndex));
         track?.style.setProperty('--panel-index', `${panelIndex}`);
     };
 
@@ -167,6 +193,19 @@ import '../styles/card.css';
 
     card?.addEventListener('pointerup', finishSwipe);
     card?.addEventListener('pointercancel', finishSwipe);
+
+    document.querySelectorAll<HTMLImageElement>('[data-gif]').forEach((image) => {
+        const preview = image.src;
+        const animation = image.dataset.gif;
+        if (!animation) return;
+
+        const showAnimation = () => { image.src = animation; };
+        const showPreview = () => { image.src = preview; };
+        image.closest('.portfolio-item')?.addEventListener('pointerenter', showAnimation);
+        image.closest('.portfolio-item')?.addEventListener('pointerleave', showPreview);
+        image.closest('.portfolio-item')?.addEventListener('focusin', showAnimation);
+        image.closest('.portfolio-item')?.addEventListener('focusout', showPreview);
+    });
 
     const contactForm = document.querySelector<HTMLFormElement>('[data-contact-form]');
     contactForm?.addEventListener('pointerdown', (event) => event.stopPropagation());
