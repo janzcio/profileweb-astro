@@ -28,6 +28,7 @@
 
 /* CARD */
 .card-container{
+    position: relative;
     overflow: hidden;
     width: 650px;
     height: 430px;
@@ -40,6 +41,36 @@
 
 .card-container:active{
     cursor: grabbing;
+}
+
+.carousel-zone{
+    position: absolute;
+    top: 0;
+    z-index: 4;
+    width: 22%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color .2s ease;
+}
+
+.carousel-zone-previous{
+    left: 0;
+}
+
+.carousel-zone-next{
+    right: 0;
+}
+
+.carousel-zone:active{
+    background-color: rgba(128, 128, 128, .25);
+}
+
+.carousel-zone:focus-visible{
+    outline: 2px solid rgba(143, 213, 196, .8);
+    outline-offset: -4px;
 }
 
 .card-track{
@@ -562,15 +593,18 @@ a:hover{
 /* RESPONSIVE */
 @media (max-width: 576px){
     .container{
-        height: 100vh;
-        padding: 0 15px;
+        width: 100vw;
+        height: 100dvh;
+        min-height: 100dvh;
+        padding: 0;
     }
     .card-container{
         background: linear-gradient(to right, #024945, #12a89c);
-        width: 100%;
-        height: 520px;
-        margin-top: 12px;
-        margin-bottom: 12px;
+        width: 100vw;
+        height: 100dvh;
+        min-height: 100dvh;
+        margin: 0;
+        border-radius: 0;
     }
     .profile-panel{
         flex-direction: column-reverse;

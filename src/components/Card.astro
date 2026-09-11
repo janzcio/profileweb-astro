@@ -40,6 +40,8 @@ import '../styles/card.css';
 
 <div class="container">
     <div class="card-container" data-card>
+        <button class="carousel-zone carousel-zone-previous" type="button" data-carousel-previous aria-label="Previous slide"></button>
+        <button class="carousel-zone carousel-zone-next" type="button" data-carousel-next aria-label="Next slide"></button>
         <div class="card-track" data-card-track>
             <section class="card-panel profile-panel" aria-label="Profile">
                 <div class="descripcion">
@@ -164,17 +166,32 @@ import '../styles/card.css';
     const track = document.querySelector<HTMLElement>('[data-card-track]');
     let startX = 0;
     let currentX = 0;
+    let startY = 0;
+    let currentY = 0;
     let isDragging = false;
     let panelIndex = 0;
+    const swipeThreshold = 28;
 
     const setCardState = (nextPanelIndex: number) => {
-        panelIndex = Math.max(0, Math.min(4, nextPanelIndex));
+        panelIndex = Math.max(0, Math.min(5, nextPanelIndex));
         track?.style.setProperty('--panel-index', `${panelIndex}`);
     };
+
+    const previousSlide = document.querySelector<HTMLButtonElement>('[data-carousel-previous]');
+    const nextSlide = document.querySelector<HTMLButtonElement>('[data-carousel-next]');
+    const navigateFromZone = (direction: number, event: Event) => {
+        event.stopPropagation();
+        setCardState(panelIndex + direction);
+    };
+
+    previousSlide?.addEventListener('click', (event) => navigateFromZone(-1, event));
+    nextSlide?.addEventListener('click', (event) => navigateFromZone(1, event));
 
     card?.addEventListener('pointerdown', (event: PointerEvent) => {
         startX = event.clientX;
         currentX = startX;
+        startY = event.clientY;
+        currentY = startY;
         isDragging = true;
         card.setPointerCapture(event.pointerId);
         track?.classList.add('is-dragging');
@@ -183,6 +200,7 @@ import '../styles/card.css';
     card?.addEventListener('pointermove', (event: PointerEvent) => {
         if (!isDragging || !track) return;
         currentX = event.clientX;
+        currentY = event.clientY;
         const distance = currentX - startX;
         track.style.setProperty('--drag-offset', `${distance}px`);
     });
@@ -192,7 +210,9 @@ import '../styles/card.css';
         isDragging = false;
         card?.releasePointerCapture(event.pointerId);
 
-        const hasSwiped = Math.abs(currentX - startX) > 55;
+        const horizontalDistance = Math.abs(currentX - startX);
+        const verticalDistance = Math.abs(currentY - startY);
+        const hasSwiped = horizontalDistance > swipeThreshold && horizontalDistance > verticalDistance;
         track?.classList.remove('is-dragging');
 
         if (hasSwiped && track) {
