@@ -265,7 +265,10 @@ import '../styles/card.css';
     const swipeThreshold = 28;
 
     const setCardState = (nextPanelIndex: number) => {
-        panelIndex = Math.max(0, Math.min(6, nextPanelIndex));
+        const totalPanels = track ? track.querySelectorAll('.card-panel').length : 0;
+        if (!totalPanels) return;
+
+        panelIndex = (nextPanelIndex + totalPanels) % totalPanels;
         track?.style.setProperty('--panel-index', `${panelIndex}`);
     };
 
