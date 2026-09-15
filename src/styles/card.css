@@ -204,6 +204,14 @@
     font-size: 13px;
 }
 
+.experience-item .industry{
+    margin-top: 4px;
+    color: #8fd5c4;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
 .experience-item time{
     display: block;
     margin-top: 3px;
@@ -456,7 +464,15 @@
     font-size: 15px;
 }
 
-.portfolio-details p{
+.portfolio-industry{
+    margin-top: 5px;
+    color: #8fd5c4;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.portfolio-details p:last-child{
     margin-top: 5px;
     color: #d2dfdc;
     font-size: 12px;

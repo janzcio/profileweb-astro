@@ -3,6 +3,7 @@
 type WorkExperience = {
     role: string;
     company: string;
+    industry: string;
     period: string;
     description: string;
 };
@@ -17,6 +18,7 @@ type Education = {
 
 type PortfolioItem = {
     title: string;
+    industry: string;
     image: string;
     gif: string;
     description: string;
@@ -124,6 +126,7 @@ import '../styles/card.css';
                                 <div>
                                     <h3>{experience.role}</h3>
                                     <p class="company">{experience.company}</p>
+                                    <p class="industry">{experience.industry}</p>
                                 </div>
                                 <time>{experience.period}</time>
                                 <p>{experience.description}</p>
@@ -143,6 +146,7 @@ import '../styles/card.css';
                                 <img src={item.image} data-gif={item.gif} alt={`${item.title} project preview`}>
                                 <div class="portfolio-details">
                                     <h3>{item.title}</h3>
+                                    <p class="portfolio-industry">Industry: {item.industry}</p>
                                     <p>{item.description}</p>
                                 </div>
                             </article>
@@ -153,6 +157,7 @@ import '../styles/card.css';
                         <img data-portfolio-lightbox-image alt="">
                         <div>
                             <h3 data-portfolio-lightbox-title></h3>
+                            <p data-portfolio-lightbox-industry></p>
                             <p data-portfolio-lightbox-description></p>
                         </div>
                     </div>
@@ -329,6 +334,7 @@ import '../styles/card.css';
     const lightbox = document.querySelector<HTMLElement>('[data-portfolio-lightbox]');
     const lightboxImage = document.querySelector<HTMLImageElement>('[data-portfolio-lightbox-image]');
     const lightboxTitle = document.querySelector<HTMLElement>('[data-portfolio-lightbox-title]');
+    const lightboxIndustry = document.querySelector<HTMLElement>('[data-portfolio-lightbox-industry]');
     const lightboxDescription = document.querySelector<HTMLElement>('[data-portfolio-lightbox-description]');
     const closeLightbox = document.querySelector<HTMLButtonElement>('[data-portfolio-close]');
 
@@ -341,12 +347,14 @@ import '../styles/card.css';
     const showLightbox = (item: HTMLElement) => {
         const image = item.querySelector<HTMLImageElement>('img');
         const title = item.querySelector<HTMLElement>('.portfolio-details h3');
-        const description = item.querySelector<HTMLElement>('.portfolio-details p');
-        if (!lightbox || !image || !title || !description) return;
+        const industry = item.querySelector<HTMLElement>('.portfolio-industry');
+        const description = item.querySelectorAll<HTMLElement>('.portfolio-details p')[1];
+        if (!lightbox || !image || !title || !industry || !description) return;
 
         lightboxImage?.setAttribute('src', image.dataset.gif ?? image.src);
         lightboxImage?.setAttribute('alt', image.alt);
         if (lightboxTitle) lightboxTitle.textContent = title.textContent;
+        if (lightboxIndustry) lightboxIndustry.textContent = industry.textContent;
         if (lightboxDescription) lightboxDescription.textContent = description.textContent;
         lightbox.hidden = false;
         closeLightbox?.focus();
