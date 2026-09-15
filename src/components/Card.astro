@@ -55,6 +55,9 @@ const { name, position, aboutMe, linkedin, github, cvLink, profileImage, workExp
     testimonials?: TestimonialItem[];
 };
 
+// here
+const showVideosSection = false;
+
 import '../styles/card.css';
 ---
 
@@ -164,7 +167,9 @@ import '../styles/card.css';
                 </div>
             </section>
 
-            <section class="card-panel video-panel" aria-label="Videos">
+            
+            {showVideosSection && (
+                <section class="card-panel video-panel" aria-label="Videos" >
                 <div class="video-content">
                     <p class="eyebrow">Behind the work</p>
                     <h2>Videos</h2>
@@ -195,7 +200,7 @@ import '../styles/card.css';
                     <p data-video-lightbox-description></p>
                 </div>
             </section>
-
+            )}
             <section class="card-panel testimonials-panel" aria-label="Testimonials">
                 <div class="testimonials-content">
                     <p class="eyebrow">Friends and colleagues</p>
